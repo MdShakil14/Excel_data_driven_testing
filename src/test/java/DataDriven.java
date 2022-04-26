@@ -4,18 +4,18 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class DataDriven {
-    public static void main(String[] args) throws IOException {
 
-
+    public ArrayList<String> getData(String testCaseName) throws IOException {
         FileInputStream fis = new FileInputStream("C:\\Users\\mdsha\\OneDrive\\Desktop\\Demodata.xlsx");
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
 
         int no_of_sheets = workbook.getNumberOfSheets();
+        ArrayList<String> testData = new ArrayList<String>();
         for (int i = 0; i < no_of_sheets; i++) {
             if (workbook.getSheetName(i).equalsIgnoreCase("Profile")) {
                 XSSFSheet sheet = workbook.getSheetAt(i); //Sheet is collection of rows
@@ -35,8 +35,20 @@ public class DataDriven {
                 }
                 System.out.println(column);
 
+                while (rows.hasNext()){
+                    Row value = rows.next();
+                    if(value.getCell(column).getStringCellValue().equalsIgnoreCase(testCaseName)){
+                        Iterator<Cell> deptValue = value.cellIterator();
+                        while (deptValue.hasNext()){
+                            testData.add(deptValue.next().getStringCellValue());
+                        }
+                    }
+                }
+
             }
 
         }
+        return testData;
     }
+
 }
